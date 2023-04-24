@@ -43,3 +43,39 @@ getOperadorADireita matriz (x, y) =
             '|'
     else
         '|'
+
+ehMaiorQueTodosVizinhos :: MatrizOperadores -> Posicao -> Bool
+ehMaiorQueTodosVizinhos matriz (x, y) = do
+    let operadorAcima = getOperadorAcima matriz (x, y)
+    let operadorAbaixo = getOperadorAbaixo matriz (x, y)
+    let operadorAEsquerda = getOperadorAEsquerda matriz (x, y)
+    let operadorADireita = getOperadorADireita matriz (x, y)
+    let elemento = matriz!!x!!y
+
+    if (elemento /= 'x') then
+        False
+    else if ((operadorAcima == '^' || operadorAcima == '|') 
+          && (operadorAbaixo == 'v' || operadorAbaixo == '|')
+          && (operadorAEsquerda == '<' || operadorAEsquerda == '|')
+          && (operadorADireita == '>' || operadorADireita == '|')) then
+            True
+    else
+        False
+
+ehMenorQueTodosVizinhos :: MatrizOperadores -> Posicao -> Bool
+ehMenorQueTodosVizinhos matriz (x, y) = do
+    let operadorAcima = getOperadorAcima matriz (x, y)
+    let operadorAbaixo = getOperadorAbaixo matriz (x, y)
+    let operadorAEsquerda = getOperadorAEsquerda matriz (x, y)
+    let operadorADireita = getOperadorADireita matriz (x, y)
+    let elemento = matriz!!x!!y
+
+    if (elemento /= 'x') then
+        False
+    else if ((operadorAcima == 'v' || operadorAcima == '|') 
+          && (operadorAbaixo == '^' || operadorAbaixo == '|')
+          && (operadorAEsquerda == '>' || operadorAEsquerda == '|')
+          && (operadorADireita == '<' || operadorADireita == '|')) then
+            True
+    else
+        False
