@@ -15,6 +15,13 @@ matriz4x4 = [['x', '<', 'x',     'x', '<', 'x'],
              ['v', '|', '^',     '^', '|', 'v'],
              ['x', '>', 'x',     'x', '>', 'x']]
 
+matrizResultado :: MatrizValores
+matrizResultado = [[2, 0,    0, 4],
+                   [0, 4,    3, 2],
+
+                   [4, 3,    2, 3],
+                   [3, 2,    0, 1]]
+
 matriz6x6 :: MatrizOperadores
 -- exemplo de matriz 6x6
 -- https://www.janko.at/Raetsel/Sudoku/Vergleich/010.a.htm

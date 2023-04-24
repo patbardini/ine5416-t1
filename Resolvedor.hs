@@ -1,5 +1,4 @@
 module Resolvedor where
-
 import Matriz
 
 type Posicao = (Int, Int)
@@ -88,28 +87,30 @@ getPosicaoNumeroValido matrizOperadores matrizValores (linha, coluna) valorSelec
     let operadorAEsquerda = getOperadorAEsquerda matrizOperadores (linha, coluna)
     let operadorADireita = getOperadorADireita matrizOperadores (linha, coluna)
     let tamanhoMatriz = getDimensaoMatriz matrizOperadores
-    
-    if operadorAcima /= '|' &&  not (validaOperacao operadorAcima valorSelecionado (matrizValores !!(linha - 1) !!coluna)) then
-        False 
-    else if operadorAbaixo /= '|' &&  not (validaOperacao operadorAbaixo (matrizValores !!(linha + 1) !!coluna) valorSelecionado) then
-        False
-    else if operadorAEsquerda /= '|' && not (validaOperacao operadorAEsquerda (matrizValores !!linha !!(coluna - 1)) valorSelecionado) then
-        False
-    else if operadorADireita /= '|' && not (validaOperacao operadorADireita valorSelecionado (matrizValores !!linha  !!(coluna + 1))) then
-        False
-    else
-        -- validar repetição linha/coluna
-        if (isRepetidoValorLinha matrizValores valorSelecionado (linha, 0) tamanhoMatriz) then
+
+    if (isRepetidoValorLinha matrizValores valorSelecionado (linha, 0) tamanhoMatriz) then
             False
         else if (isRepetidoValorColuna matrizValores valorSelecionado (0, coluna) tamanhoMatriz) then
             False
         else
-            True 
+            if operadorAcima /= '|' &&  not (validaOperacao operadorAcima valorSelecionado (matrizValores !!(linha - 1) !!coluna)) then
+                False 
+            else if operadorAbaixo /= '|' &&  not (validaOperacao operadorAbaixo (matrizValores !!(linha + 1) !!coluna) valorSelecionado) then
+                False
+            else if operadorAEsquerda /= '|' && not (validaOperacao operadorAEsquerda (matrizValores !!linha !!(coluna - 1)) valorSelecionado) then
+                False
+            else if operadorADireita /= '|' && not (validaOperacao operadorADireita valorSelecionado (matrizValores !!linha  !!(coluna + 1))) then
+                False
+            else 
+                True
+    
 
 isRepetidoValorLinha :: MatrizValores -> Int -> (Int, Int) -> Int -> Bool
 isRepetidoValorLinha matrizValores valorSelecionado (linha, coluna) qtdColunas =
 
-    if coluna == (qtdColunas - 1) then
+    if (matrizValores !!linha !!coluna) == valorSelecionado then
+        True
+    else if coluna == (qtdColunas - 1) then
         False
     else
         isRepetidoValorLinha matrizValores valorSelecionado (linha, (coluna + 1)) qtdColunas
@@ -117,7 +118,9 @@ isRepetidoValorLinha matrizValores valorSelecionado (linha, coluna) qtdColunas =
 isRepetidoValorColuna :: MatrizValores -> Int -> (Int, Int) -> Int -> Bool
 isRepetidoValorColuna matrizValores valorSelecionado (linha, coluna) qtdLinhas = 
 
-    if linha == (qtdLinhas - 1) then
+    if (matrizValores !!linha !!coluna) == valorSelecionado then
+        True
+    else if linha == (qtdLinhas - 1) then
         False
     else
         isRepetidoValorColuna matrizValores valorSelecionado ((linha + 1), coluna) qtdLinhas
