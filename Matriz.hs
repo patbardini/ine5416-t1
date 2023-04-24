@@ -2,7 +2,7 @@ module Matriz where
 
 type Operador = Char
 type MatrizOperadores = [[Operador]]
-type Matriz = [[Int]]
+type MatrizValores = [[Int]]
 
 matriz4x4 :: MatrizOperadores
 -- exemplo de matriz 4x4
@@ -60,5 +60,5 @@ getDimensaoRegiao 6 = (2, 3)
 getDimensaoRegiao 9 = (3, 3)
 
 -- cria uma matriz quadrada preenchida com zeros com o tamanho passado como parâmetro
-criaMatrizValores :: Int -> Matriz
+criaMatrizValores :: Int -> MatrizValores
 criaMatrizValores dimensao = replicate dimensao . replicate dimensao $ 0
