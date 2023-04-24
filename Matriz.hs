@@ -5,12 +5,13 @@ type MatrizOperadores = [[Operador]]
 type Matriz = [[Int]]
 
 matriz4x4 :: MatrizOperadores
-matriz4x4 = [['x', '<', 'x', 'x', '<', 'x'],
-             ['v', '|', '^', '^', '|', 'v'],
-             ['x', '<', 'x', 'x', '>', 'x'],
-             ['x', '>', 'x', 'x', '<', 'x'],
-             ['v', '|', '^', '^', '|', 'v'],
-             ['x', '>', 'x', 'x', '>', 'x']]
+matriz4x4 = [['x', '<', 'x',     'x', '<', 'x'],
+             ['v', '|', '^',     '^', '|', 'v'],
+             ['x', '<', 'x',     'x', '>', 'x'],
+
+             ['x', '>', 'x',     'x', '<', 'x'],
+             ['v', '|', '^',     '^', '|', 'v'],
+             ['x', '>', 'x',     'x', '>', 'x']]
 
 getDimensaoMatriz :: MatrizOperadores -> Int
 getDimensaoMatriz (m:ms) = length $ filter (== 'x') m
