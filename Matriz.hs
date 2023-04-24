@@ -69,3 +69,7 @@ getDimensaoRegiao 9 = (3, 3)
 -- cria uma matriz quadrada preenchida com zeros com o tamanho passado como parâmetro
 criaMatrizValores :: Int -> MatrizValores
 criaMatrizValores dimensao = replicate dimensao . replicate dimensao $ 0
+
+pedacosDe :: Int -> [(Int, Int)] -> [[(Int, Int)]]
+pedacosDe _ [] = []
+pedacosDe tamanho xs = take tamanho xs : pedacosDe tamanho (drop tamanho xs)

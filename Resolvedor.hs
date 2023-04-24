@@ -1,7 +1,23 @@
 module Resolvedor where
 import Matriz
+import Data.Tuple
 
 type Posicao = (Int, Int)
+
+getPosicoesDosX :: MatrizOperadores -> Posicao -> [Posicao] -> [Posicao]
+getPosicoesDosX matriz (linha, coluna) listaPosicoes = do
+    let dimensaoMatrizLinha = length (matriz)
+    let dimensaoMatrizColuna = length (matriz!!linha)
+
+    if linha > (dimensaoMatrizLinha-1) then
+        listaPosicoes
+    else if coluna <= (dimensaoMatrizColuna-1) then
+        if (matriz!!linha!!coluna == 'x') then
+            getPosicoesDosX matriz (linha, coluna+1) (listaPosicoes ++ [(linha, coluna)])
+        else
+            getPosicoesDosX matriz (linha, coluna+1) listaPosicoes
+    else
+        getPosicoesDosX matriz (linha+1, 0) listaPosicoes
 
 getOperadorAcima :: MatrizOperadores -> Posicao -> Operador
 getOperadorAcima matriz (linha, coluna) = 
@@ -79,13 +95,24 @@ ehMenorQueTodosVizinhos matriz (linha, coluna) = do
     else
         False
 
+getPosicaoEquivalenteMatrizOperadores :: MatrizOperadores -> Posicao -> Posicao
+getPosicaoEquivalenteMatrizOperadores matrizOperadores (linha, coluna) = 
+    (pedacosDe tamanhoMatriz posicoesDosX)!!linha!!coluna where
+    tamanhoMatriz = getDimensaoMatriz matrizOperadores
+    posicoesDosX = getPosicoesDosX matrizOperadores (0, 0) []
+
 getPosicaoNumeroValido :: MatrizOperadores -> MatrizValores -> Posicao -> Int -> Bool
 getPosicaoNumeroValido matrizOperadores matrizValores (linha, coluna) valorSelecionado  = do
     -- validações de maior/menor
-    let operadorAcima = getOperadorAcima matrizOperadores (linha, coluna)
-    let operadorAbaixo = getOperadorAbaixo matrizOperadores (linha, coluna)
-    let operadorAEsquerda = getOperadorAEsquerda matrizOperadores (linha, coluna)
-    let operadorADireita = getOperadorADireita matrizOperadores (linha, coluna)
+    let posicaoNaMatrizOperadores = getPosicaoEquivalenteMatrizOperadores matrizOperadores (linha, coluna)
+    let linhaMatrizOperadores = fst posicaoNaMatrizOperadores
+    let colunaMatrizOperadores = snd posicaoNaMatrizOperadores
+
+    let operadorAcima = getOperadorAcima matrizOperadores (linhaMatrizOperadores, colunaMatrizOperadores)
+    let operadorAbaixo = getOperadorAbaixo matrizOperadores (linhaMatrizOperadores, colunaMatrizOperadores)
+    let operadorAEsquerda = getOperadorAEsquerda matrizOperadores (linhaMatrizOperadores, colunaMatrizOperadores)
+    let operadorADireita = getOperadorADireita matrizOperadores (linhaMatrizOperadores, colunaMatrizOperadores)
+
     let tamanhoMatriz = getDimensaoMatriz matrizOperadores
 
     if (isRepetidoValorLinha matrizValores valorSelecionado (linha, 0) tamanhoMatriz) then
@@ -103,7 +130,6 @@ getPosicaoNumeroValido matrizOperadores matrizValores (linha, coluna) valorSelec
                 False
             else 
                 True
-    
 
 isRepetidoValorLinha :: MatrizValores -> Int -> (Int, Int) -> Int -> Bool
 isRepetidoValorLinha matrizValores valorSelecionado (linha, coluna) qtdColunas =
