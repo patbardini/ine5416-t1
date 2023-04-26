@@ -79,7 +79,7 @@ inserirValorMatriz :: MatrizValores -> (Int, Int) -> Int -> MatrizValores
 inserirValorMatriz matrizValores (linha, coluna) numero =
     let 
         linhasAnteriores = take linha matrizValores
-        linhasPosteriores = drop linha matrizValores
+        linhasPosteriores = drop (linha+1) matrizValores
         linhaAlterada = alteraElementoLinha (matrizValores !! linha) coluna numero
     in
         linhasAnteriores ++ [linhaAlterada] ++ linhasPosteriores
@@ -88,6 +88,6 @@ alteraElementoLinha :: Lista -> Int -> Int -> Lista
 alteraElementoLinha lista coluna valor =
     let
         elementosAnterior = take coluna lista
-        elementosPosterior = drop coluna lista
+        elementosPosterior = drop (coluna+1) lista
     in
         elementosAnterior ++ [valor] ++ elementosPosterior
