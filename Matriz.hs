@@ -3,6 +3,7 @@ module Matriz where
 type Operador = Char
 type MatrizOperadores = [[Operador]]
 type MatrizValores = [[Int]]
+type Lista = [Int]
 
 matriz4x4 :: MatrizOperadores
 -- exemplo de matriz 4x4
@@ -16,11 +17,11 @@ matriz4x4 = [['x', '<', 'x',     'x', '<', 'x'],
              ['x', '>', 'x',     'x', '>', 'x']]
 
 matrizResultado :: MatrizValores
-matrizResultado = [[2, 0,    0, 4],
-                   [0, 4,    3, 2],
+matrizResultado = [[0, 0,    0, 0],
+                   [0, 0,    0, 0],
 
-                   [4, 3,    2, 3],
-                   [3, 2,    0, 1]]
+                   [0, 0,    0, 0],
+                   [0, 0,    0, 0]]
 
 matriz6x6 :: MatrizOperadores
 -- exemplo de matriz 6x6
@@ -73,3 +74,20 @@ criaMatrizValores dimensao = replicate dimensao . replicate dimensao $ 0
 pedacosDe :: Int -> [(Int, Int)] -> [[(Int, Int)]]
 pedacosDe _ [] = []
 pedacosDe tamanho xs = take tamanho xs : pedacosDe tamanho (drop tamanho xs)
+
+inserirValorMatriz :: MatrizValores -> (Int, Int) -> Int -> MatrizValores
+inserirValorMatriz matrizValores (linha, coluna) numero =
+    let 
+        linhasAnteriores = take linha matrizValores
+        linhasPosteriores = drop linha matrizValores
+        linhaAlterada = alteraElementoLinha (matrizValores !! linha) coluna numero
+    in
+        linhasAnteriores ++ [linhaAlterada] ++ linhasPosteriores
+
+alteraElementoLinha :: Lista -> Int -> Int -> Lista
+alteraElementoLinha lista coluna valor =
+    let
+        elementosAnterior = take coluna lista
+        elementosPosterior = drop coluna lista
+    in
+        elementosAnterior ++ [valor] ++ elementosPosterior
