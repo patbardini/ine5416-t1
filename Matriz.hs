@@ -85,7 +85,7 @@ getDimensaoMatriz (m:ms) = length $ filter (== 'x') m
 
 getDimensaoRegiao :: Int -> (Int, Int)
 getDimensaoRegiao 4 = (2, 2)
-getDimensaoRegiao 6 = (2, 3)
+getDimensaoRegiao 6 = (3, 2)
 getDimensaoRegiao 9 = (3, 3)
 
 -- cria uma matriz quadrada preenchida com zeros com o tamanho passado como parâmetro
