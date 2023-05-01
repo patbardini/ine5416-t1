@@ -102,56 +102,69 @@ getPosicaoEquivalenteMatrizOperadores matrizOperadores (linha, coluna) =
     posicoesDosX = getPosicoesDosX matrizOperadores (0, 0) []
 
 getPosicaoNumeroValido :: MatrizOperadores -> MatrizValores -> Posicao -> Int -> Bool
-getPosicaoNumeroValido matrizOperadores matrizValores (linha, coluna) valorSelecionado  = do
-    -- validações de maior/menor
-    let posicaoNaMatrizOperadores = getPosicaoEquivalenteMatrizOperadores matrizOperadores (linha, coluna)
-    let linhaMatrizOperadores = fst posicaoNaMatrizOperadores
-    let colunaMatrizOperadores = snd posicaoNaMatrizOperadores
-
-    let operadorAcima = getOperadorAcima matrizOperadores (linhaMatrizOperadores, colunaMatrizOperadores)
-    let operadorAbaixo = getOperadorAbaixo matrizOperadores (linhaMatrizOperadores, colunaMatrizOperadores)
-    let operadorAEsquerda = getOperadorAEsquerda matrizOperadores (linhaMatrizOperadores, colunaMatrizOperadores)
-    let operadorADireita = getOperadorADireita matrizOperadores (linhaMatrizOperadores, colunaMatrizOperadores)
-
+getPosicaoNumeroValido matrizOperadores matrizValores (linha, coluna) valorSelecionado = do
     let tamanhoMatriz = getDimensaoMatriz matrizOperadores
 
-    if (isRepetidoValorLinha matrizValores valorSelecionado (linha, 0) tamanhoMatriz) then
-            False
-        else if (isRepetidoValorColuna matrizValores valorSelecionado (0, coluna) tamanhoMatriz) then
-            False
-        else
-            if operadorAcima /= '|' &&  not (validaOperacao operadorAcima valorSelecionado (matrizValores !!(linha - 1) !!coluna)) then
-                False 
-            else if operadorAbaixo /= '|' &&  not (validaOperacao operadorAbaixo (matrizValores !!(linha + 1) !!coluna) valorSelecionado) then
-                False
-            else if operadorAEsquerda /= '|' && not (validaOperacao operadorAEsquerda (matrizValores !!linha !!(coluna - 1)) valorSelecionado) then
-                False
-            else if operadorADireita /= '|' && not (validaOperacao operadorADireita valorSelecionado (matrizValores !!linha  !!(coluna + 1))) then
-                False
-            else 
-                True
-
-isRepetidoValorLinha :: MatrizValores -> Int -> (Int, Int) -> Int -> Bool
-isRepetidoValorLinha matrizValores valorSelecionado (linha, coluna) qtdColunas =
-
-    if (matrizValores !!linha !!coluna) == valorSelecionado then
-        True
-    else if coluna == (qtdColunas - 1) then
+    if (validaOperadores matrizOperadores matrizValores (linha, coluna) valorSelecionado)
+        && not (isRepetidoValorLinha matrizValores valorSelecionado (linha, 0) tamanhoMatriz)
+        && not (isRepetidoValorColuna matrizValores valorSelecionado (0, coluna) tamanhoMatriz) then
+            True
+    else
         False
+
+isRepetidoValorLinha :: MatrizValores -> Int -> Posicao -> Int -> Bool
+isRepetidoValorLinha matrizValores valorSelecionado (linha, coluna) qtdColunas =
+    if coluna == qtdColunas then
+        False
+    else if (matrizValores !!linha !!coluna) == valorSelecionado then
+        True
     else
         isRepetidoValorLinha matrizValores valorSelecionado (linha, (coluna + 1)) qtdColunas
 
-isRepetidoValorColuna :: MatrizValores -> Int -> (Int, Int) -> Int -> Bool
+isRepetidoValorColuna :: MatrizValores -> Int -> Posicao -> Int -> Bool
 isRepetidoValorColuna matrizValores valorSelecionado (linha, coluna) qtdLinhas = 
-
-    if (matrizValores !!linha !!coluna) == valorSelecionado then
-        True
-    else if linha == (qtdLinhas - 1) then
+    if linha == qtdLinhas then
         False
+    else if (matrizValores !!linha !!coluna) == valorSelecionado then
+        True
     else
         isRepetidoValorColuna matrizValores valorSelecionado ((linha + 1), coluna) qtdLinhas
 
-validaOperacao :: Char -> Int -> Int -> Bool
+validaOperadores :: MatrizOperadores -> MatrizValores -> Posicao -> Int -> Bool
+validaOperadores matrizOperadores matrizValores (linha, coluna) valorSelecionado =
+    let posicaoNaMatrizOperadores = getPosicaoEquivalenteMatrizOperadores matrizOperadores (linha, coluna)
+        linhaMatrizOperadores = fst posicaoNaMatrizOperadores
+        colunaMatrizOperadores = snd posicaoNaMatrizOperadores
+
+        operadorAcima = getOperadorAcima matrizOperadores (linhaMatrizOperadores, colunaMatrizOperadores)
+        operadorAbaixo = getOperadorAbaixo matrizOperadores (linhaMatrizOperadores, colunaMatrizOperadores)
+        operadorAEsquerda = getOperadorAEsquerda matrizOperadores (linhaMatrizOperadores, colunaMatrizOperadores)
+        operadorADireita = getOperadorADireita matrizOperadores (linhaMatrizOperadores, colunaMatrizOperadores)
+
+        listaValidadeOperadores = [isOperadorValido operadorAcima,
+                                   isOperadorValido operadorAbaixo,
+                                   isOperadorValido operadorAEsquerda,
+                                   isOperadorValido operadorADireita]
+
+        listaValidadeOperacao = concat [[validaOperacao operadorAcima valorSelecionado (matrizValores !!(linha - 1) !!coluna) | fst (listaValidadeOperadores!!0)],
+                                        [validaOperacao operadorAbaixo (matrizValores !!(linha + 1) !!coluna) valorSelecionado | fst (listaValidadeOperadores!!1)],
+                                        [validaOperacao operadorAEsquerda (matrizValores !!linha !!(coluna - 1)) valorSelecionado | fst (listaValidadeOperadores!!2)],
+                                        [validaOperacao operadorADireita valorSelecionado (matrizValores !!linha  !!(coluna + 1))| fst (listaValidadeOperadores!!3)]]
+        
+        isValido = not (False `elem` listaValidadeOperacao)
+
+    in isValido
+
+isOperadorValido :: Operador -> (Bool, Operador)
+isOperadorValido operador = 
+    case operador of
+        'v' -> (True, operador)
+        '^' -> (True, operador)
+        '>' -> (True, operador)
+        '<' -> (True, operador)
+        _ -> (False, operador)
+
+validaOperacao :: Operador -> Int -> Int -> Bool
 validaOperacao operador valorA valorB =
     if valorA == 0 || valorB == 0 then
         True

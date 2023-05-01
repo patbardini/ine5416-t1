@@ -16,13 +16,6 @@ matriz4x4 = [['x', '<', 'x',     'x', '<', 'x'],
              ['v', '|', '^',     '^', '|', 'v'],
              ['x', '>', 'x',     'x', '>', 'x']]
 
-matrizResultado :: MatrizValores
-matrizResultado = [[0, 0,    0, 0],
-                   [0, 0,    0, 0],
-
-                   [0, 0,    0, 0],
-                   [0, 0,    0, 0]]
-
 matriz6x6 :: MatrizOperadores
 -- exemplo de matriz 6x6
 -- https://www.janko.at/Raetsel/Sudoku/Vergleich/010.a.htm
@@ -58,6 +51,34 @@ matriz9x9 = [['x', '<', 'x', '>', 'x',      'x', '<', 'x', '<', 'x',      'x', '
              ['x', '>', 'x', '>', 'x',      'x', '>', 'x', '>', 'x',      'x', '<', 'x', '>', 'x'],
              ['v', '|', 'v', '|', '^',      'v', '|', '^', '|', '^',      '^', '|', '^', '|', '^'],
              ['x', '>', 'x', '>', 'x',      'x', '<', 'x', '>', 'x',      'x', '<', 'x', '<', 'x']]
+
+-- resultados, para testar funcionalidades
+matrizResultado :: Int -> MatrizValores
+matrizResultado 4 = [[2, 3,    1, 4],
+                     [1, 4,    3, 2],
+
+                     [4, 1,    2, 3],
+                     [3, 2,    4, 1]]
+
+matrizResultado 6 = [[5, 3,    4, 1,    2, 6],
+                     [4, 1,    2, 6,    5, 3],
+                     [2, 6,    5, 3,    4, 1],
+                     
+                     [3, 4,    6, 5,    1, 2],
+                     [6, 2,    1, 4,    3, 5],
+                     [1, 5,    3, 2,    6, 4]]
+
+matrizResultado 9 = [[3, 7, 6,    4, 5, 8,    9, 2, 1],
+                     [8, 1, 5,    2, 6, 9,    7, 3, 4],
+                     [4, 2, 9,    7, 1, 3,    8, 5, 6],
+                     
+                     [5, 8, 4,    6, 3, 7,    1, 9, 2],
+                     [1, 9, 7,    5, 2, 4,    6, 8, 3],
+                     [2, 6, 3,    9, 8, 1,    5, 4, 7],
+                     
+                     [7, 5, 8,    3, 4, 6,    2, 1, 9],
+                     [9, 4, 1,    8, 7, 2,    3, 6, 5],
+                     [6, 3, 2,    1, 9, 5,    4, 7, 8]]
 
 getDimensaoMatriz :: MatrizOperadores -> Int
 getDimensaoMatriz (m:ms) = length $ filter (== 'x') m
