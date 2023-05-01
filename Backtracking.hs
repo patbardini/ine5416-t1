@@ -6,10 +6,10 @@ import Data.Tuple
 
 backtrancking :: MatrizOperadores -> MatrizValores -> Posicao -> Int -> (Bool, MatrizValores)
 backtrancking matrizOperadores matrizValores (linha, coluna) valorSelecionado = do
-    if linha == 4 then
+    if linha == 6 then
         (True, matrizValores)
     else
-        if coluna < 4 then
+        if coluna < 6 then
             solucionar matrizOperadores matrizValores (linha, coluna) valorSelecionado
         else
             backtrancking matrizOperadores matrizValores ((linha+1), 0) valorSelecionado
@@ -20,7 +20,7 @@ solucionar matrizOperadores matrizValores (linha, coluna) valorInserido = do
         (False, matrizValores)
     else            
         if getPosicaoNumeroValido matrizOperadores  matrizValores (linha, coluna) valorInserido then
-            let (valido, matriz) = backtrancking matrizOperadores (inserirValorMatriz matrizValores (linha, coluna) valorInserido) (linha, (coluna+1)) 4
+            let (valido, matriz) = backtrancking matrizOperadores (inserirValorMatriz matrizValores (linha, coluna) valorInserido) (linha, (coluna+1)) 6
             in if valido then
                 (True, matriz)
             else solucionar matrizOperadores matrizValores (linha, coluna) (valorInserido - 1)
