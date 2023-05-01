@@ -1,6 +1,7 @@
 module Resolvedor where
 import Matriz
 import Data.Tuple
+import Debug.Trace
 
 type Posicao = (Int, Int)
 
@@ -40,7 +41,7 @@ getOperadorAbaixo matriz (linha, coluna) =
         '|'
 
 getOperadorAEsquerda :: MatrizOperadores -> Posicao -> Operador
-getOperadorAEsquerda matriz (linha, coluna) = 
+getOperadorAEsquerda matriz (linha, coluna) =     
     if (coluna > 0) then
         if ((matriz!!linha)!!(coluna-1) /= 'x') then
             (matriz!!linha)!!(coluna-1)
@@ -51,13 +52,18 @@ getOperadorAEsquerda matriz (linha, coluna) =
 
 getOperadorADireita :: MatrizOperadores -> Posicao -> Operador
 getOperadorADireita matriz (linha, coluna) = 
-    if (coluna+1 < length matriz) then
-        if ((matriz!!linha)!!(coluna+1) /= 'x') then
-            (matriz!!linha)!!(coluna+1)
+    let dimensaoMatriz = getDimensaoMatriz matriz 
+        colunaLength = if dimensaoMatriz == 6 
+                          then (length matriz) - 1
+                          else length matriz
+    in
+        if (coluna+1 < colunaLength) then
+            if ((matriz!!linha)!!(coluna+1) /= 'x') then
+                (matriz!!linha)!!(coluna+1)
+            else
+                '|'
         else
             '|'
-    else
-        '|'
 
 ehMaiorQueTodosVizinhos :: MatrizOperadores -> Posicao -> Bool
 ehMaiorQueTodosVizinhos matriz (linha, coluna) = do
@@ -113,7 +119,6 @@ getRegiao matriz (linha, coluna) =
 getPosicaoNumeroValido :: MatrizOperadores -> MatrizValores -> Posicao -> Int -> Bool
 getPosicaoNumeroValido matrizOperadores matrizValores (linha, coluna) valorSelecionado = do
     let tamanhoMatriz = getDimensaoMatriz matrizOperadores
-
     if (validaOperadores matrizOperadores matrizValores (linha, coluna) valorSelecionado)
         && not (isRepetidoValorLinha matrizValores valorSelecionado (linha, 0) tamanhoMatriz)
         && not (isRepetidoValorColuna matrizValores valorSelecionado (0, coluna) tamanhoMatriz)
@@ -166,7 +171,7 @@ validaOperadores matrizOperadores matrizValores (linha, coluna) valorSelecionado
                                         [validaOperacao operadorADireita valorSelecionado (matrizValores !!linha  !!(coluna + 1))| fst (listaValidadeOperadores!!3)]]
         
         isValido = not (False `elem` listaValidadeOperacao)
-
+    
     in isValido
 
 isOperadorValido :: Operador -> (Bool, Operador)
