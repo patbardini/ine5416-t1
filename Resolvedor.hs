@@ -52,10 +52,9 @@ getOperadorAEsquerda matriz (linha, coluna) =
 getOperadorADireita :: MatrizOperadores -> Posicao -> Operador
 getOperadorADireita matriz (linha, coluna) =
     let lengthMatriz = (length matriz)
-
-    let dimensaoMatriz = getDimensaoMatriz matriz 
+        dimensaoMatriz = getDimensaoMatriz matriz
         colunaLength = if dimensaoMatriz == 6 
-                          then (lengthMatriz) - 1
+                          then (lengthMatriz - 1)
                           else lengthMatriz
     in
         if (coluna+1 < colunaLength) then
