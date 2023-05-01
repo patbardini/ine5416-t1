@@ -101,13 +101,23 @@ getPosicaoEquivalenteMatrizOperadores matrizOperadores (linha, coluna) =
     tamanhoMatriz = getDimensaoMatriz matrizOperadores
     posicoesDosX = getPosicoesDosX matrizOperadores (0, 0) []
 
+getRegiao :: MatrizValores -> Posicao -> [Int]
+getRegiao matriz (linha, coluna) = 
+    let (dimensaoLinha, dimensaoColuna) = getDimensaoRegiao (length matriz)
+        (inicioLinha, inicioColuna) = ((linha `div` dimensaoLinha) * dimensaoLinha, (coluna `div` dimensaoColuna) * dimensaoColuna)
+        (finalLinha, finalColuna) = (inicioLinha + dimensaoLinha - 1, inicioColuna + dimensaoColuna - 1)
+        regiao = [matriz!!i !!j | i <- [inicioLinha .. finalLinha], 
+                                  j <- [inicioColuna .. finalColuna]]
+    in regiao
+
 getPosicaoNumeroValido :: MatrizOperadores -> MatrizValores -> Posicao -> Int -> Bool
 getPosicaoNumeroValido matrizOperadores matrizValores (linha, coluna) valorSelecionado = do
     let tamanhoMatriz = getDimensaoMatriz matrizOperadores
 
     if (validaOperadores matrizOperadores matrizValores (linha, coluna) valorSelecionado)
         && not (isRepetidoValorLinha matrizValores valorSelecionado (linha, 0) tamanhoMatriz)
-        && not (isRepetidoValorColuna matrizValores valorSelecionado (0, coluna) tamanhoMatriz) then
+        && not (isRepetidoValorColuna matrizValores valorSelecionado (0, coluna) tamanhoMatriz)
+        && not (isRepetidoValorRegiao (getRegiao matrizValores (linha, coluna)) valorSelecionado) then
             True
     else
         False
@@ -129,6 +139,10 @@ isRepetidoValorColuna matrizValores valorSelecionado (linha, coluna) qtdLinhas =
         True
     else
         isRepetidoValorColuna matrizValores valorSelecionado ((linha + 1), coluna) qtdLinhas
+
+isRepetidoValorRegiao :: [Int] -> Int -> Bool
+isRepetidoValorRegiao [] _ = False
+isRepetidoValorRegiao (x:xs) valorSelecionado = if x == valorSelecionado then True else isRepetidoValorRegiao xs valorSelecionado
 
 validaOperadores :: MatrizOperadores -> MatrizValores -> Posicao -> Int -> Bool
 validaOperadores matrizOperadores matrizValores (linha, coluna) valorSelecionado =
