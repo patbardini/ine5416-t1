@@ -1,7 +1,6 @@
 module Resolvedor where
 import Matriz
 import Data.Tuple
-import Debug.Trace
 
 type Posicao = (Int, Int)
 
@@ -51,11 +50,13 @@ getOperadorAEsquerda matriz (linha, coluna) =
         '|'
 
 getOperadorADireita :: MatrizOperadores -> Posicao -> Operador
-getOperadorADireita matriz (linha, coluna) = 
+getOperadorADireita matriz (linha, coluna) =
+    let lengthMatriz = (length matriz)
+
     let dimensaoMatriz = getDimensaoMatriz matriz 
         colunaLength = if dimensaoMatriz == 6 
-                          then (length matriz) - 1
-                          else length matriz
+                          then (lengthMatriz) - 1
+                          else lengthMatriz
     in
         if (coluna+1 < colunaLength) then
             if ((matriz!!linha)!!(coluna+1) /= 'x') then
