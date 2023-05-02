@@ -112,3 +112,12 @@ alteraElementoLinha lista coluna valor =
         elementosPosterior = drop (coluna+1) lista
     in
         elementosAnterior ++ [valor] ++ elementosPosterior
+
+rowToString:: Lista -> String 
+rowToString [] = "\n"
+rowToString (x:xs) = "[ "++(show x)++" ]" ++ rowToString xs
+
+gridToString::MatrizValores -> String
+gridToString [] = "\n"
+gridToString [a] = (rowToString a) ++ (gridToString [])
+gridToString (a:b) = (rowToString a) ++ (gridToString b)
