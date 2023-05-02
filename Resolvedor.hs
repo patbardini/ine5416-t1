@@ -149,31 +149,7 @@ isRepetidoValorRegiao :: [Int] -> Int -> Bool
 isRepetidoValorRegiao [] _ = False
 isRepetidoValorRegiao (x:xs) valorSelecionado = if x == valorSelecionado then True else isRepetidoValorRegiao xs valorSelecionado
 
--- validaOperadores :: MatrizOperadores -> MatrizValores -> Posicao -> Int -> Bool
--- validaOperadores matrizOperadores matrizValores (linha, coluna) valorSelecionado =
---     let posicaoNaMatrizOperadores = getPosicaoEquivalenteMatrizOperadores matrizOperadores (linha, coluna)
---         linhaMatrizOperadores = fst posicaoNaMatrizOperadores
---         colunaMatrizOperadores = snd posicaoNaMatrizOperadores
-
---         operadorAcima = getOperadorAcima matrizOperadores (linhaMatrizOperadores, colunaMatrizOperadores)
---         operadorAbaixo = getOperadorAbaixo matrizOperadores (linhaMatrizOperadores, colunaMatrizOperadores)
---         operadorAEsquerda = getOperadorAEsquerda matrizOperadores (linhaMatrizOperadores, colunaMatrizOperadores)
---         operadorADireita = getOperadorADireita matrizOperadores (linhaMatrizOperadores, colunaMatrizOperadores)
-
---         listaValidadeOperadores = [isOperadorValido operadorAcima,
---                                    isOperadorValido operadorAbaixo,
---                                    isOperadorValido operadorAEsquerda,
---                                    isOperadorValido operadorADireita]
-
---         listaValidadeOperacao = concat [[validaOperacao operadorAcima valorSelecionado (matrizValores !!(linha - 1) !!coluna) | fst (listaValidadeOperadores!!0)],
---                                         [validaOperacao operadorAbaixo (matrizValores !!(linha + 1) !!coluna) valorSelecionado | fst (listaValidadeOperadores!!1)],
---                                         [validaOperacao operadorAEsquerda (matrizValores !!linha !!(coluna - 1)) valorSelecionado | fst (listaValidadeOperadores!!2)],
---                                         [validaOperacao operadorADireita valorSelecionado (matrizValores !!linha  !!(coluna + 1))| fst (listaValidadeOperadores!!3)]]
-        
---         isValido = not (False `elem` listaValidadeOperacao)
-    
---     in isValido
-
+-- Encontra o intervalo possível de valores naquela região
 encontraIntervalo :: MatrizOperadores -> MatrizValores -> Posicao -> Intervalo -> Intervalo
 encontraIntervalo matrizOperadores matrizValores (linha, coluna) (menor, maior) =
     let posicaoNaMatrizOperadores = getPosicaoEquivalenteMatrizOperadores matrizOperadores (linha, coluna)
@@ -181,29 +157,25 @@ encontraIntervalo matrizOperadores matrizValores (linha, coluna) (menor, maior) 
         colunaMatrizOperadores = snd posicaoNaMatrizOperadores
 
         operadorAcima = getOperadorAcima matrizOperadores (linhaMatrizOperadores, colunaMatrizOperadores)
-        operadorAbaixo = getOperadorAbaixo matrizOperadores (linhaMatrizOperadores, colunaMatrizOperadores)
         operadorAEsquerda = getOperadorAEsquerda matrizOperadores (linhaMatrizOperadores, colunaMatrizOperadores)
-        operadorADireita = getOperadorADireita matrizOperadores (linhaMatrizOperadores, colunaMatrizOperadores)
 
         listaValidadeOperadores = [isOperadorValido operadorAcima,
-                                   isOperadorValido operadorAbaixo,
-                                   isOperadorValido operadorAEsquerda,
-                                   isOperadorValido operadorADireita]
+                                   isOperadorValido operadorAEsquerda]
 
+        -- Encontra a faixa de valores possíveis para posição (x, y)
         (menor1, maior1) = maiorMenor operadorAcima '^' (matrizValores !!(linha - 1) !!coluna) (menor, maior) (fst (listaValidadeOperadores!!0))
-        (menor2, maior2) = maiorMenor operadorAbaixo 'v' (matrizValores !!(linha + 1) !!coluna) (menor1, maior1) (fst (listaValidadeOperadores!!1))
-        (menor3, maior3) = maiorMenor operadorAEsquerda '<' (matrizValores !!linha !!(coluna - 1)) (menor2, maior2) (fst (listaValidadeOperadores!!2))
-        (menor4, maior4) = maiorMenor operadorADireita '>' (matrizValores !!linha  !!(coluna + 1)) (menor3, maior3) (fst (listaValidadeOperadores!!3))
+        (menor2, maior2) = maiorMenor operadorAEsquerda '<' (matrizValores !!linha !!(coluna - 1)) (menor1, maior1) (fst (listaValidadeOperadores!!1))
     
-    in (menor3, maior3)
+    in (menor2, maior2)
 
+-- Devolve uma tupla com o valor (menor, maior) para o intervalo solicitado
 maiorMenor :: Operador -> Char -> Int -> (Int, Int) -> Bool -> (Int, Int)
 maiorMenor operador posicao valor (menor, maior) valido =      
     if valido then
         if valor == 0 then
             (menor, maior)
         else  
-            if posicao == '>' || posicao == '^' then
+            if posicao == '^' then
                 if operador == '>' || operador == '^' then
                     if menor <= valor then
                         (valor + 1, maior)
@@ -237,12 +209,3 @@ isOperadorValido operador =
         '>' -> (True, operador)
         '<' -> (True, operador)
         _ -> (False, operador)
-
--- validaOperacao :: Operador -> Int -> Int -> Bool
--- validaOperacao operador valorA valorB =
---     if valorA == 0 || valorB == 0 then
---         True
---     else if operador == '>' || operador == '^' then
---         valorA > valorB
---     else 
---         valorA < valorB
