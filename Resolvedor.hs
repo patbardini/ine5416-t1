@@ -5,6 +5,7 @@ import Data.Tuple
 type Posicao = (Int, Int)
 type Intervalo = (Int, Int)
 
+-- Recebe uma matriz de operadores e devolve uma lista contendo todas as posições dos 'x'
 getPosicoesDosX :: MatrizOperadores -> Posicao -> [Posicao] -> [Posicao]
 getPosicoesDosX matriz (linha, coluna) listaPosicoes = do
     let dimensaoMatrizLinha = length (matriz)
@@ -20,6 +21,7 @@ getPosicoesDosX matriz (linha, coluna) listaPosicoes = do
     else
         getPosicoesDosX matriz (linha+1, 0) listaPosicoes
 
+-- Retorna o operador localizado acima da posição informada
 getOperadorAcima :: MatrizOperadores -> Posicao -> Operador
 getOperadorAcima matriz (linha, coluna) = 
     if (linha > 0) then
@@ -30,6 +32,7 @@ getOperadorAcima matriz (linha, coluna) =
     else
         '|'
 
+-- Retorna o operador localizado abaixo da posição informada
 getOperadorAbaixo :: MatrizOperadores -> Posicao -> Operador
 getOperadorAbaixo matriz (linha, coluna) = 
     if (linha+1 < length matriz) then
@@ -40,6 +43,7 @@ getOperadorAbaixo matriz (linha, coluna) =
     else
         '|'
 
+-- Retorna o operador localizado à esquerda da posição informada
 getOperadorAEsquerda :: MatrizOperadores -> Posicao -> Operador
 getOperadorAEsquerda matriz (linha, coluna) =     
     if (coluna > 0) then
@@ -50,6 +54,7 @@ getOperadorAEsquerda matriz (linha, coluna) =
     else
         '|'
 
+-- Retorna o operador localizado à direita da posição informada
 getOperadorADireita :: MatrizOperadores -> Posicao -> Operador
 getOperadorADireita matriz (linha, coluna) =
     let lengthMatriz = (length matriz)
@@ -66,48 +71,15 @@ getOperadorADireita matriz (linha, coluna) =
         else
             '|'
 
-ehMaiorQueTodosVizinhos :: MatrizOperadores -> Posicao -> Bool
-ehMaiorQueTodosVizinhos matriz (linha, coluna) = do
-    let operadorAcima = getOperadorAcima matriz (linha, coluna)
-    let operadorAbaixo = getOperadorAbaixo matriz (linha, coluna)
-    let operadorAEsquerda = getOperadorAEsquerda matriz (linha, coluna)
-    let operadorADireita = getOperadorADireita matriz (linha, coluna)
-    let elemento = matriz!!linha!!coluna
-
-    if (elemento /= 'x') then
-        False
-    else if ((operadorAcima == '^' || operadorAcima == '|') 
-          && (operadorAbaixo == 'v' || operadorAbaixo == '|')
-          && (operadorAEsquerda == '<' || operadorAEsquerda == '|')
-          && (operadorADireita == '>' || operadorADireita == '|')) then
-            True
-    else
-        False
-
-ehMenorQueTodosVizinhos :: MatrizOperadores -> Posicao -> Bool
-ehMenorQueTodosVizinhos matriz (linha, coluna) = do
-    let operadorAcima = getOperadorAcima matriz (linha, coluna)
-    let operadorAbaixo = getOperadorAbaixo matriz (linha, coluna)
-    let operadorAEsquerda = getOperadorAEsquerda matriz (linha, coluna)
-    let operadorADireita = getOperadorADireita matriz (linha, coluna)
-    let elemento = matriz!!linha!!coluna
-
-    if (elemento /= 'x') then
-        False
-    else if ((operadorAcima == 'v' || operadorAcima == '|') 
-          && (operadorAbaixo == '^' || operadorAbaixo == '|')
-          && (operadorAEsquerda == '>' || operadorAEsquerda == '|')
-          && (operadorADireita == '<' || operadorADireita == '|')) then
-            True
-    else
-        False
-
+-- Recebe uma matriz de operadores e uma posição e retorna a posição equivalente na matriz de valores
 getPosicaoEquivalenteMatrizOperadores :: MatrizOperadores -> Posicao -> Posicao
 getPosicaoEquivalenteMatrizOperadores matrizOperadores (linha, coluna) = 
     (pedacosDe tamanhoMatriz posicoesDosX)!!linha!!coluna where
     tamanhoMatriz = getDimensaoMatriz matrizOperadores
     posicoesDosX = getPosicoesDosX matrizOperadores (0, 0) []
 
+-- Recebe uma matriz de valores e uma posição e devolve uma lista contendo todos os elementos 
+-- localizados naquela mesma região
 getRegiao :: MatrizValores -> Posicao -> [Int]
 getRegiao matriz (linha, coluna) = 
     let (dimensaoLinha, dimensaoColuna) = getDimensaoRegiao (length matriz)
@@ -117,6 +89,7 @@ getRegiao matriz (linha, coluna) =
                                   j <- [inicioColuna .. finalColuna]]
     in regiao
 
+-- Verifica se a inserção de determinado valor na matriz é uma jogada válida
 getPosicaoNumeroValido :: MatrizOperadores -> MatrizValores -> Posicao -> Int -> Bool
 getPosicaoNumeroValido matrizOperadores matrizValores (linha, coluna) valorSelecionado = do
     let tamanhoMatriz = getDimensaoMatriz matrizOperadores
@@ -127,6 +100,7 @@ getPosicaoNumeroValido matrizOperadores matrizValores (linha, coluna) valorSelec
     else
         False
 
+-- Verifica se valor já está contido na linha
 isRepetidoValorLinha :: MatrizValores -> Int -> Posicao -> Int -> Bool
 isRepetidoValorLinha matrizValores valorSelecionado (linha, coluna) qtdColunas =
     if coluna == qtdColunas then
@@ -136,6 +110,7 @@ isRepetidoValorLinha matrizValores valorSelecionado (linha, coluna) qtdColunas =
     else
         isRepetidoValorLinha matrizValores valorSelecionado (linha, (coluna + 1)) qtdColunas
 
+-- Verifica se valor já está contido na coluna
 isRepetidoValorColuna :: MatrizValores -> Int -> Posicao -> Int -> Bool
 isRepetidoValorColuna matrizValores valorSelecionado (linha, coluna) qtdLinhas = 
     if linha == qtdLinhas then
@@ -145,6 +120,7 @@ isRepetidoValorColuna matrizValores valorSelecionado (linha, coluna) qtdLinhas =
     else
         isRepetidoValorColuna matrizValores valorSelecionado ((linha + 1), coluna) qtdLinhas
 
+-- Verifica se valor já está contido na região
 isRepetidoValorRegiao :: [Int] -> Int -> Bool
 isRepetidoValorRegiao [] _ = False
 isRepetidoValorRegiao (x:xs) valorSelecionado = if x == valorSelecionado then True else isRepetidoValorRegiao xs valorSelecionado
@@ -200,7 +176,7 @@ maiorMenor operador posicao valor (menor, maior) valido =
     else
         (menor, maior)
 
-
+-- Verifica se o operador é válido (se não se trata de um 'x' ou '|')
 isOperadorValido :: Operador -> (Bool, Operador)
 isOperadorValido operador = 
     case operador of

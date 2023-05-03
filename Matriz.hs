@@ -6,7 +6,7 @@ type MatrizValores = [[Int]]
 type Lista = [Int]
 
 matriz4x4 :: MatrizOperadores
--- exemplo de matriz 4x4
+-- Exemplo de matriz 4x4
 -- https://www.janko.at/Raetsel/Sudoku/Vergleich/001.a.htm
 matriz4x4 = [['x', '<', 'x',     'x', '<', 'x'],
              ['v', '|', '^',     '^', '|', 'v'],
@@ -17,7 +17,7 @@ matriz4x4 = [['x', '<', 'x',     'x', '<', 'x'],
              ['x', '>', 'x',     'x', '>', 'x']]
 
 matriz6x6 :: MatrizOperadores
--- exemplo de matriz 6x6
+-- Exemplo de matriz 6x6
 -- https://www.janko.at/Raetsel/Sudoku/Vergleich/010.a.htm
 matriz6x6 = [['x', '>', 'x',     'x', '>', 'x',     'x', '<', 'x'],
              ['v', '|', 'v',     'v', '|', '^',     '^', '|', 'v'],
@@ -32,7 +32,7 @@ matriz6x6 = [['x', '>', 'x',     'x', '>', 'x',     'x', '<', 'x'],
              ['x', '<', 'x',     'x', '>', 'x',     'x', '>', 'x']]
 
 matriz9x9 :: MatrizOperadores
--- exemplo de matriz 9x9
+-- Exemplo de matriz 9x9
 -- https://www.janko.at/Raetsel/Sudoku/Vergleich/190.a.htm
 matriz9x9 = [['x', '<', 'x', '>', 'x',      'x', '<', 'x', '<', 'x',      'x', '>', 'x', '>', 'x'],
              ['^', '|', 'v', '|', 'v',      'v', '|', '^', '|', '^',      'v', '|', '^', '|', '^'],
@@ -52,7 +52,7 @@ matriz9x9 = [['x', '<', 'x', '>', 'x',      'x', '<', 'x', '<', 'x',      'x', '
              ['v', '|', 'v', '|', '^',      'v', '|', '^', '|', '^',      '^', '|', '^', '|', '^'],
              ['x', '>', 'x', '>', 'x',      'x', '<', 'x', '>', 'x',      'x', '<', 'x', '<', 'x']]
 
--- resultados, para testar funcionalidades
+-- Resultados, para testar funcionalidades
 matrizResultado :: Int -> MatrizValores
 matrizResultado 4 = [[2, 3,    1, 4],
                      [1, 4,    3, 2],
@@ -80,18 +80,21 @@ matrizResultado 9 = [[3, 7, 6,    4, 5, 8,    9, 2, 1],
                      [9, 4, 1,    8, 7, 2,    3, 6, 5],
                      [6, 3, 2,    1, 9, 5,    4, 7, 8]]
 
+-- Retorna a dimensão da matriz a partir da matriz operadores
 getDimensaoMatriz :: MatrizOperadores -> Int
 getDimensaoMatriz (m:ms) = length $ filter (== 'x') m
 
+-- Retorna a dimensão da região
 getDimensaoRegiao :: Int -> (Int, Int)
 getDimensaoRegiao 4 = (2, 2)
 getDimensaoRegiao 6 = (3, 2)
 getDimensaoRegiao 9 = (3, 3)
 
--- cria uma matriz quadrada preenchida com zeros com o tamanho passado como parâmetro
+-- Cria uma matriz quadrada preenchida com zeros com o tamanho passado como parâmetro
 criaMatrizValores :: Int -> MatrizValores
 criaMatrizValores dimensao = replicate dimensao . replicate dimensao $ 0
 
+-- Divide uma lista em várias "sublistas" com o tamanho especificado
 pedacosDe :: Int -> [(Int, Int)] -> [[(Int, Int)]]
 pedacosDe _ [] = []
 pedacosDe tamanho xs = take tamanho xs : pedacosDe tamanho (drop tamanho xs)
@@ -113,6 +116,7 @@ alteraElementoLinha lista coluna valor =
     in
         elementosAnterior ++ [valor] ++ elementosPosterior
 
+-- As seguintes funções servem para printar a matriz
 rowToString:: Lista -> String 
 rowToString [] = "\n"
 rowToString (x:xs) = "[ "++(show x)++" ]" ++ rowToString xs
