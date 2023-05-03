@@ -2,28 +2,58 @@ module Backtracking where
 import Matriz
 import Resolvedor
 import Data.Tuple
+import Debug.Trace
 
-
-backtrancking :: MatrizOperadores -> MatrizValores -> Posicao -> Int -> (Bool, MatrizValores)
-backtrancking matrizOperadores matrizValores (linha, coluna) valorSelecionado = do
-    if linha == 4 then
+backTracking :: MatrizOperadores -> MatrizValores -> Posicao -> Int -> Intervalo -> (Bool, MatrizValores)
+backTracking matrizOperadores matrizValores (linha, coluna) valorSelecionado (menor, maior) = do
+    if linha == length matrizValores then
         (True, matrizValores)
     else
-        if coluna < 4 then
-            solucionar matrizOperadores matrizValores (linha, coluna) valorSelecionado
+        if coluna < length matrizValores then
+            let (menor1, maior1) = encontraIntervalo matrizOperadores matrizValores (linha, coluna) (1, length matrizValores)
+            in solucionar matrizOperadores matrizValores (linha, coluna) menor1 (menor1, maior1)
+            -- in if ehMaiorQueTodosVizinhos matrizOperadores (getPosicaoEquivalenteMatrizOperadores matrizOperadores (linha, coluna)) then
+            --     solucionarMaior matrizOperadores matrizValores (linha, coluna) maior1 (menor1, maior1)
+            -- else
+            --     solucionarMenor matrizOperadores matrizValores (linha, coluna) (menor1 - 1) (menor1, maior1)
         else
-            backtrancking matrizOperadores matrizValores ((linha+1), 0) valorSelecionado
+            backTracking matrizOperadores matrizValores ((linha+1), 0) valorSelecionado (menor, maior)
 
-solucionar :: MatrizOperadores -> MatrizValores -> Posicao -> Int -> (Bool, MatrizValores)
-solucionar matrizOperadores matrizValores (linha, coluna) valorInserido = do
-    if valorInserido == 0 then
+-- solucionarMenor :: MatrizOperadores -> MatrizValores -> Posicao -> Int -> Intervalo -> (Bool, MatrizValores)
+-- solucionarMenor matrizOperadores matrizValores (linha, coluna) valorSelecionado (menor, maior) = do
+--     if valorSelecionado > maior then
+--         (False, matrizValores)
+--     else            
+--         if getPosicaoNumeroValido matrizOperadores  matrizValores (linha, coluna) valorSelecionado then
+--             let (valido, matriz) = backTracking matrizOperadores (trace (gridToString matrizValores) (inserirValorMatriz matrizValores (linha, coluna) valorSelecionado)) (linha, (coluna+1)) 1 (menor, maior)
+--             in if valido then
+--                 (True, matriz)
+--             else solucionarMenor matrizOperadores matrizValores (linha, coluna) (valorSelecionado + 1) (menor, maior)
+--         else
+--             solucionarMenor matrizOperadores matrizValores (linha, coluna) (valorSelecionado + 1) (menor, maior)
+
+-- solucionarMaior :: MatrizOperadores -> MatrizValores -> Posicao -> Int -> Intervalo -> (Bool, MatrizValores)
+-- solucionarMaior matrizOperadores matrizValores (linha, coluna) valorSelecionado (menor, maior) = do
+--     if valorSelecionado < menor then
+--         (False, matrizValores)
+--     else            
+--         if getPosicaoNumeroValido matrizOperadores  matrizValores (linha, coluna) valorSelecionado then
+--             let (valido, matriz) = backTracking matrizOperadores (trace (gridToString matrizValores) (inserirValorMatriz matrizValores (linha, coluna) valorSelecionado)) (linha, (coluna+1)) 1 (menor, maior)
+--             in if valido then
+--                 (True, matriz)
+--             else solucionarMaior matrizOperadores matrizValores (linha, coluna) (valorSelecionado - 1) (menor, maior)
+--         else
+--             solucionarMaior matrizOperadores matrizValores (linha, coluna) (valorSelecionado - 1) (menor, maior)
+
+solucionar :: MatrizOperadores -> MatrizValores -> Posicao -> Int -> Intervalo -> (Bool, MatrizValores)
+solucionar matrizOperadores matrizValores (linha, coluna) valorSelecionado (menor, maior) = do
+    if valorSelecionado > maior then
         (False, matrizValores)
     else            
-        if getPosicaoNumeroValido matrizOperadores  matrizValores (linha, coluna) valorInserido then
-            let (valido, matriz) = backtrancking matrizOperadores (inserirValorMatriz matrizValores (linha, coluna) valorInserido) (linha, (coluna+1)) 4
+        if getPosicaoNumeroValido matrizOperadores  matrizValores (linha, coluna) valorSelecionado then
+            let (valido, matriz) = backTracking matrizOperadores (trace (gridToString matrizValores) (inserirValorMatriz matrizValores (linha, coluna) valorSelecionado)) (linha, (coluna+1)) 1 (menor, maior)
             in if valido then
                 (True, matriz)
-            else solucionar matrizOperadores matrizValores (linha, coluna) (valorInserido - 1)
+            else solucionar matrizOperadores matrizValores (linha, coluna) (valorSelecionado + 1) (menor, maior)
         else
-            solucionar matrizOperadores matrizValores (linha, coluna) (valorInserido - 1)
-
+            solucionar matrizOperadores matrizValores (linha, coluna) (valorSelecionado + 1) (menor, maior)
